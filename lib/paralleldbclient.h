@@ -23,6 +23,9 @@
 #include "constants.h"
 #include <ctime>
 
+#include <QMutex>
+#include <QMutexLocker>
+
 class ParallelDbFactory;
 
 class LIBSHARED_EXPORT ParallelDbClient : public ParallelDbMetainfo
@@ -118,6 +121,8 @@ private:
 
     QString mConnectionName;
     DbConfig mConfig;
+
+    QMutex mMutex;
 
 signals:
     void dbError(QSqlError error);

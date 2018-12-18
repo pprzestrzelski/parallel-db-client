@@ -382,6 +382,7 @@ QList<QSqlRecord> ParallelDbClient::executeQuery(
     QSqlDatabase db = QSqlDatabase::database(mConnectionName);
     QList<QSqlRecord> ans;
 
+    QMutexLocker lock(&mMutex);
     openDb();
     if (db.isOpen())
     {
@@ -390,6 +391,7 @@ QList<QSqlRecord> ParallelDbClient::executeQuery(
         QSqlQuery query(db);
         query.setForwardOnly(true);
         query.prepare(queryString);
+        // TODO: consider using query.exec(queryString)
         if (query.exec())
         {
             while (query.next())
