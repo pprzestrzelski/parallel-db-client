@@ -198,7 +198,7 @@ void ParallelDbClient::applyConfig()
     else if (mConfig.getDbEngine() == DbConfig::DbEngine::MSSQL_SQLAUTH)
     {
         db.setDatabaseName(
-                    QString("DRIVER={%1};SERVER=%2;PORT=%3;DATABASE=%4;UID=%5;PWD=%6")
+                    QString("DRIVER={%1};SERVER=%2,%3;DATABASE=%4;UID=%5;PWD=%6")
                     .arg(mConfig.getOdbcName())
                     .arg(mConfig.getIp().toString())
                     .arg(mConfig.getPort())
@@ -209,7 +209,7 @@ void ParallelDbClient::applyConfig()
     else if (mConfig.getDbEngine() == DbConfig::DbEngine::MSSQL_WINAUTH)
     {
         db.setDatabaseName(
-                    QString("DRIVER={%1};SERVER=%2;PORT=%3;DATABASE=%4")
+                    QString("DRIVER={%1};SERVER=%2,%3;DATABASE=%4")
                     .arg(mConfig.getOdbcName())
                     .arg(mConfig.getIp().toString())
                     .arg(mConfig.getPort())
