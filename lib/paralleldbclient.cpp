@@ -180,7 +180,7 @@ void ParallelDbClient::applyConfig()
     addDb();
     closeDb();
 
-    QSqlDatabase db = QSqlDatabase::database(mConnectionName);
+    QSqlDatabase db = QSqlDatabase::database(mConnectionName, false);
 
     if (mConfig.getDbEngine() == DbConfig::DbEngine::SQLITE)
     {
@@ -231,7 +231,7 @@ void ParallelDbClient::addDb()
 
 void ParallelDbClient::closeDb()
 {
-    QSqlDatabase db = QSqlDatabase::database(mConnectionName);
+    QSqlDatabase db = QSqlDatabase::database(mConnectionName, false);
     if (db.isOpen())
     {
         db.close();
@@ -241,7 +241,7 @@ void ParallelDbClient::closeDb()
 
 void ParallelDbClient::openDb()
 {
-    QSqlDatabase db = QSqlDatabase::database(mConnectionName);
+    QSqlDatabase db = QSqlDatabase::database(mConnectionName, true);
     if (!db.isOpen())
     {
         bool succ = db.open();
