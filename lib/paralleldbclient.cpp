@@ -2,10 +2,10 @@
 
 #ifdef _MSC_VER
    #define LOG(msg, useLog) \
-    if (useLog) qDebug() << __TIME__ << __FUNCTION__ << "=>" << msg;
+    if (useLog) qDebug() << __FUNCTION__ << "=>" << msg;
 #elif __GNUC__
     #define LOG(msg, useLog) \
-    if (useLog) qDebug() << __TIME__ << __PRETTY_FUNCTION__ << "=>" << msg;
+    if (useLog) qDebug() << __PRETTY_FUNCTION__ << "=>" << msg;
 #endif
 
 
