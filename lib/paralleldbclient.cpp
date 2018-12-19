@@ -1,5 +1,13 @@
 #include "paralleldbclient.h"
 
+#ifdef _MSC_VER
+   #define LOG(msg, useLog) \
+    if (useLog) qDebug() << __TIME__ << __FUNCTION__ << "=>" << msg;
+#elif __GNUC__
+    #define LOG(msg, useLog) \
+    if (useLog) qDebug() << __TIME__ << __PRETTY_FUNCTION__ << "=>" << msg;
+#endif
+
 
 ParallelDbClient::ParallelDbClient(
         const QString& connectionName,
@@ -39,10 +47,11 @@ bool ParallelDbClient::verifyPresenceOfRequestedDriver()
     if (!ParallelDbMetainfo::isDriverAvailable(mConfig.getDbDriver()))
     {
         succ = false;
-        log(
+        LOG(
             "Requested database driver " +
             mConfig.getDbDriver() +
-            " is NOT available!");
+            " is NOT available!",
+            mUseLog);
     }
 
     return succ;
@@ -388,7 +397,7 @@ QList<QSqlRecord> ParallelDbClient::executeQuery(
     openDb();
     if (db.isOpen())
     {
-        log("database " + db.databaseName() + " opened");
+        LOG("database " + db.databaseName() + " opened", mUseLog);
 
         QSqlQuery query(db);
         query.setForwardOnly(true);
@@ -401,17 +410,17 @@ QList<QSqlRecord> ParallelDbClient::executeQuery(
                 ans.append(query.record());
             }
 
-            log("query executed successfully!");
+            LOG("query executed successfully!", mUseLog);
         }
         else
         {
-            log("query not executed " + query.lastError().text());
+            LOG("query not executed " + query.lastError().text(), mUseLog);
             emit dbError(db.lastError());
         }
     }
     else
     {
-        log("database " + db.databaseName() + " is not opened");
+        LOG("database " + db.databaseName() + " is not opened", mUseLog);
         emit dbError(db.lastError());
     }
 
@@ -431,15 +440,16 @@ QList<QSqlRecord> ParallelDbClient::executeBindedQuery(
         placeholders.size() == 0 ||
         binaries.size() == 0)
     {
-        log(QString("Placeholders and/or binaries") +
-            " are empty or of different size.");
+        LOG(QString("Placeholders and/or binaries") +
+            " are empty or of different size.",
+            mUseLog);
         return ans;
     }
 
     openDb();
     if (db.isOpen())
     {
-        log("database " + db.databaseName() + " opened");
+        LOG("database " + db.databaseName() + " opened", mUseLog);
 
         QSqlQuery query(db);
         query.setForwardOnly(true);
@@ -459,11 +469,11 @@ QList<QSqlRecord> ParallelDbClient::executeBindedQuery(
             {
                 ans.append(query.record());
             }
-            log("query executed successfully!");
+            LOG("query executed successfully!", mUseLog);
         }
         else
         {
-            log("query not executed " + query.lastError().text());
+            LOG("query not executed " + query.lastError().text(), mUseLog);
             emit dbError(db.lastError());
         }
     }
@@ -485,7 +495,7 @@ bool ParallelDbClient::executeNonQuery(const QString& queryString)
     openDb();
     if (db.isOpen())
     {
-        log("database " + db.databaseName() + " opened");
+        LOG("database " + db.databaseName() + " opened", mUseLog);
 
         QSqlQuery query(db);
         query.setForwardOnly(true);
@@ -493,17 +503,17 @@ bool ParallelDbClient::executeNonQuery(const QString& queryString)
         if (query.exec())
         {
             succ = true;
-            log("query executed successfully!");
+            LOG("query executed successfully!", mUseLog);
         }
         else
         {
-            log("query not executed " + query.lastError().text());
+            LOG("query not executed " + query.lastError().text(), mUseLog);
             emit dbError(db.lastError());
         }
     }
     else
     {
-        log("database " + db.databaseName() + " is not opened");
+        LOG("database " + db.databaseName() + " is not opened", mUseLog);
         emit dbError(db.lastError());
     }
 
@@ -523,15 +533,15 @@ bool ParallelDbClient::executeBindedNonQuery(
         placeholders.size() == 0 ||
         binaries.size() == 0)
     {
-        log(QString("binded query not executed. Placeholders and/or binaries") +
-            " are empty or of different size.");
+        LOG(QString("binded query not executed. Placeholders and/or binaries") +
+            " are empty or of different size.", mUseLog);
         return succ;
     }
 
     openDb();
     if (db.isOpen())
     {
-        log("database " + db.databaseName() + " opened");
+        LOG("database " + db.databaseName() + " opened", mUseLog);
 
         QSqlQuery query(db);
         query.setForwardOnly(true);
@@ -548,17 +558,17 @@ bool ParallelDbClient::executeBindedNonQuery(
         if (query.exec())
         {
             succ = true;
-            log("query executed successfully!");
+            LOG("query executed successfully!", mUseLog);
         }
         else
         {
-            log("query not executed " + query.lastError().text());
+            LOG("query not executed " + query.lastError().text(), mUseLog);
             emit dbError(db.lastError());
         }
     }
     else
     {
-        log("database " + db.databaseName() + " is not opened");
+        LOG("database " + db.databaseName() + " is not opened", mUseLog);
         emit dbError(db.lastError());
     }
 
