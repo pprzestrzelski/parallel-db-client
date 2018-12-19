@@ -6,7 +6,8 @@ ParallelDbClient::ParallelDbClient(
         const DbConfig& config,
         QObject* parent)
     : ParallelDbMetainfo(parent),
-    mConnectionName(connectionName)
+    mConnectionName(connectionName),
+    mUseLog(false)
 {
     // mConfig has to be assigned here!
     // In list initialization it causes the following error:
@@ -217,7 +218,8 @@ void ParallelDbClient::applyConfig()
     }
 }
 
-
+// TODO: add db per thread?! Include thread id
+// https://stackoverflow.com/questions/47457478/using-qsqlquery-from-multiple-threads
 void ParallelDbClient::addDb()
 {
     if (!QSqlDatabase::contains(mConnectionName))
@@ -633,11 +635,21 @@ bool ParallelDbClient::isOpen() const
 
 void ParallelDbClient::log(const QString& msg)
 {
-#ifdef _MSC_VER
-    qDebug().nospace() << __FUNCTION__ << " => " << msg;
-#endif
+    if (mUseLog)
+    {
+    #ifdef _MSC_VER
+        qDebug().nospace() << __FUNCTION__ << " => " << msg;
+    #endif
 
-#ifdef __GNUC__
-    qDebug().nospace() << __PRETTY_FUNCTION__ << " => " << msg;
-#endif
+    #ifdef __GNUC__
+        qDebug().nospace() << __PRETTY_FUNCTION__ << " => " << msg;
+    #endif
+    }
+}
+
+
+void ParallelDbClient::useLog(bool v)
+{
+    QMutexLocker locker(&mMutex);
+    mUseLog = v;
 }

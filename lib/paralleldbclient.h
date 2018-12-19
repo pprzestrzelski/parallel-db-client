@@ -58,6 +58,7 @@ public:
     QString getPassword() const;
     QString getOdbcName() const;
     void applyConfig();
+    void useLog(bool v);
 
     QFuture<QList<QSqlRecord>> sendQuery(const QString& queryString);
     QFuture<QList<QSqlRecord>> sendBindedQuery(
@@ -121,6 +122,7 @@ private:
 
     QString mConnectionName;
     DbConfig mConfig;
+    bool mUseLog;
 
     QMutex mMutex;
 
