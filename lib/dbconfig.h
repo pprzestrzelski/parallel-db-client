@@ -34,7 +34,7 @@ public:
     ~DbConfig();
 
     void setDbEngine(DbEngine type) { this->mEngine = type; }
-    void setIp(const QHostAddress& ip) { this->mIp = ip; }
+    void setIp(const QHostAddress& ip);
     void setIp(const QString& domain);
     void setPort(quint16 port) { this->mPort = port; }
     void setDbname(const QString &dbName) { this->mDbname = dbName; }
@@ -44,6 +44,7 @@ public:
 
     DbEngine getDbEngine() const { return mEngine; }
     QHostAddress getIp() const { return mIp; }
+    QString getDomain() const { return mDomain; }
     quint16 getPort() const { return mPort; }
     QString getDbname() const { return mDbname; }
     QString getUsername() const { return mUsername; }
@@ -55,6 +56,7 @@ public:
 
 private:
     void initDbDrivers();
+    bool isDomainAddress(const QString& value);
 
     DbEngine mEngine;
     QHostAddress mIp;
@@ -64,6 +66,7 @@ private:
     QString mPassword;
     QString mOdbcName;
     QMap<DbEngine, QString> mDrivers;
+    QString mDomain;
 
 signals:
     void hostError(QString msg, QString errorString);

@@ -76,7 +76,37 @@ void DbConfig::setIp(const QString& domain)
     if (verifyDomain(domain))
     {
         mIp = hi.addresses().first();
+        if (isDomainAddress(domain))
+        {
+            mDomain = domain;
+        }
+        else
+        {
+            mDomain = QString();
+        }
     }
+}
+
+
+void DbConfig::setIp(const QHostAddress& ip)
+{
+    mIp = ip;
+    mDomain = QString();
+}
+
+
+bool DbConfig::isDomainAddress(const QString& value)
+{
+    QList<QString> list = value.split(".");
+    if (list.length() != 4)
+        return true;
+
+    QRegExp re("\\d*");
+    QString sequence = list.join("");
+    if (!re.exactMatch(sequence))
+        return true;
+
+    return false;
 }
 
 
