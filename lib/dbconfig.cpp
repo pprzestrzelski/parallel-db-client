@@ -85,6 +85,10 @@ void DbConfig::setIp(const QString& domain)
             mDomain = QString();
         }
     }
+    else
+    {
+        setIp(QHostAddress(DbConstants::LOCALHOST));
+    }
 }
 
 
