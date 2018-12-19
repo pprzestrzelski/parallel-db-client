@@ -630,10 +630,51 @@ bool ParallelDbClient::rollback() const
 
 bool ParallelDbClient::connected() const
 {
-    // TODO: QSqlDatabase::database(mConnectionName).isOpen()
-    //       is not the same as connected!
-    // READ: Detecting QSqlDatabase disconnections on qtcenter.org
-    return true;
+    // Database has to be opened here, otherwise
+    // QVariant::isNull() will return true!
+    QSqlDatabase db = QSqlDatabase::database(mConnectionName, true);
+    if (db.isOpenError())
+    {
+        LOG("Error while opening DB", mUseLog);
+        return false;
+    }
+
+    QVariant v = db.driver()->handle();
+
+    if (v.isValid() && !v.isNull())
+    {
+        SQLHDBC hdbc = *static_cast<SQLHDBC**>(v.data());
+        SQLUINTEGER uIntVal;
+        SQLRETURN retcode = SQLGetConnectAttr(
+                            hdbc,
+                            SQL_ATTR_CONNECTION_DEAD,
+                            static_cast<SQLPOINTER>(&uIntVal),
+                            static_cast<SQLINTEGER>(sizeof (uIntVal)),
+                            nullptr);
+
+        if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+        {
+            LOG("Failed to read connection attributes", mUseLog);
+            return false;
+        }
+
+        if (uIntVal == SQL_CD_TRUE)
+        {
+            LOG("Connection is closed/dead", mUseLog);
+            return false;
+        }
+        else if (uIntVal == SQL_CD_FALSE)
+        {
+            LOG("Connection is available", mUseLog);
+            return true;
+        }
+    }
+
+    // equivalent to closeDb()!
+    if (!db.isOpen())
+        db.open();
+
+    return false;
 }
 
 

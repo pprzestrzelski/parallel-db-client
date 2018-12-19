@@ -25,6 +25,8 @@ HEADERS += \
     paralleldbmetainfo.h \
     utils.h
 
+LIBS += -lodbc
+
 unix {
     headers.files = paralleldbfactory.h paralleldbclient.h dbconfig.h
     headers.path = /usr/include

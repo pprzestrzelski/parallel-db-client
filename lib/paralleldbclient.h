@@ -15,6 +15,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QSqlError>
+#include <QSqlDriver>
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 #include <QList>
@@ -22,6 +23,8 @@
 #include "dbconfig.h"
 #include "constants.h"
 #include <ctime>
+#include <sql.h>
+#include <sqlext.h>
 
 #include <QMutex>
 #include <QMutexLocker>
