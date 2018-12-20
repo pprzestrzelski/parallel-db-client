@@ -98,7 +98,7 @@ public:
     bool transaction() const;
     bool commit() const;
     bool rollback() const;
-    bool connected() const;
+    bool connected(SQLRETURN& reqRetCode) const;
     bool isOpen() const;
 
 private:

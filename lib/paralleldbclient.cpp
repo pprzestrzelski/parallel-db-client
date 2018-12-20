@@ -628,7 +628,7 @@ bool ParallelDbClient::rollback() const
 }
 
 
-bool ParallelDbClient::connected() const
+bool ParallelDbClient::connected(SQLRETURN& reqRetCode) const
 {
     // Database has to be opened here, otherwise
     // QVariant::isNull() will return true!
@@ -651,7 +651,7 @@ bool ParallelDbClient::connected() const
                             static_cast<SQLPOINTER>(&uIntVal),
                             static_cast<SQLINTEGER>(sizeof (uIntVal)),
                             nullptr);
-
+        reqRetCode = retcode;
         if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
             LOG("Failed to read connection attributes", mUseLog);

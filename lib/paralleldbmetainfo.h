@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSqlDriverCreator>
+#include <sqltypes.h>
 
 class ParallelDbMetainfo : public QObject
 {
@@ -26,7 +27,7 @@ public:
     virtual bool transaction() const = 0;
     virtual bool commit() const = 0;
     virtual bool rollback() const = 0;
-    virtual bool connected() const = 0;
+    virtual bool connected(SQLRETURN& reqRetCode) const = 0;
     virtual bool isOpen() const = 0;
 };
 
