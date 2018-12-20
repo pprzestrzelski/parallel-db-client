@@ -23,6 +23,15 @@
 #include "dbconfig.h"
 #include "constants.h"
 #include <ctime>
+
+#if defined(_WIN32) && defined(_MSC_VER)
+    #include <Windows.h>
+
+    #pragma comment(lib, "odbc32")
+    #pragma comment(lib, "odbccp32")
+    #pragma comment(lib, "user32")
+#endif
+
 #include <sql.h>
 #include <sqlext.h>
 
