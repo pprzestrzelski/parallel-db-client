@@ -105,7 +105,9 @@ public:
     bool transaction() const;
     bool commit() const;
     bool rollback() const;
-    bool connected(SQLRETURN& reqRetCode) const;
+    bool connected(
+            SQLRETURN& reqRetCode,
+            QMap<QString, QString>& diagData) const;
     bool isOpen() const;
 
 private:

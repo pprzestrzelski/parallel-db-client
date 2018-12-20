@@ -628,7 +628,9 @@ bool ParallelDbClient::rollback() const
 }
 
 
-bool ParallelDbClient::connected(SQLRETURN& reqRetCode) const
+bool ParallelDbClient::connected(
+        SQLRETURN& reqRetCode,
+        QMap<QString, QString>& diagData) const
 {
     // Database has to be opened here, otherwise
     // QVariant::isNull() will return true!
@@ -652,6 +654,32 @@ bool ParallelDbClient::connected(SQLRETURN& reqRetCode) const
                             static_cast<SQLINTEGER>(sizeof (uIntVal)),
                             nullptr);
         reqRetCode = retcode;
+
+        if (retcode == SQL_SUCCESS_WITH_INFO || retcode == SQL_ERROR)
+        {
+            SQLCHAR sqlState[6], msg[SQL_MAX_MESSAGE_LENGTH];
+            SQLLEN numRecs = 0;
+            SQLINTEGER nativeError;
+            SQLSMALLINT msgLen, i = 1;
+            SQLHSTMT hstmt = nullptr;
+            SQLRETURN stmtRetCode;
+            SQLGetDiagField(
+                        SQL_HANDLE_STMT, hstmt, 0,
+                        SQL_DIAG_NUMBER, &numRecs, 0, nullptr);
+
+            while ((i <= numRecs) && (stmtRetCode =
+                                      SQLGetDiagRec(SQL_HANDLE_STMT, hstmt,
+                                                    i, sqlState, &nativeError,
+                                                    msg, sizeof (msg),
+                                                    &msgLen)) != SQL_NO_DATA)
+            {
+                diagData.insert(
+                            QString::fromUtf8(reinterpret_cast<char*>(sqlState)),
+                            QString::fromUtf8(reinterpret_cast<char*>(msg)));
+                ++i;
+            }
+        }
+
         if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
             LOG("Failed to read connection attributes", mUseLog);

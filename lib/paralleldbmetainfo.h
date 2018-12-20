@@ -32,7 +32,9 @@ public:
     virtual bool transaction() const = 0;
     virtual bool commit() const = 0;
     virtual bool rollback() const = 0;
-    virtual bool connected(SQLRETURN& reqRetCode) const = 0;
+    virtual bool connected(
+            SQLRETURN& reqRetCode,
+            QMap<QString, QString>& diagData) const = 0;
     virtual bool isOpen() const = 0;
 };
 
