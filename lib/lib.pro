@@ -4,6 +4,8 @@ TEMPLATE = lib
 QT -= gui
 QT += network sql
 
+CONFIG += c++11
+
 DEFINES += \
     LIB_LIBRARY \
     QT_DEPRECATED_WARNINGS
@@ -25,9 +27,8 @@ HEADERS += \
     paralleldbmetainfo.h \
     utils.h
 
-LIBS += -lodbc
-
 unix {
+    LIBS += -lodbc
     headers.files = paralleldbfactory.h paralleldbclient.h dbconfig.h
     headers.path = /usr/include
     target.path = /usr/lib
