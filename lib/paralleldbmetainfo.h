@@ -3,6 +3,11 @@
 
 #include <QObject>
 #include <QSqlDriverCreator>
+
+#if defined(_WIN32) && defined(_MSC_VER)
+    #include <Windows.h>
+#endif
+
 #include <sqltypes.h>
 
 class ParallelDbMetainfo : public QObject
